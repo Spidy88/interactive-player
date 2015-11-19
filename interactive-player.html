@@ -1,0 +1,151 @@
+<link rel="import" href="../iron-list/iron-list.html">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+<script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
+
+<dom-module id="interactive-player">
+  <template>
+    <style>
+      #video {
+        display: block;
+        width: 65%;
+        margin-right: auto;
+        margin-left: auto;
+        
+      }
+
+      #comment-list {
+        display: block;
+        width: 35%;
+        margin-right: auto;
+        margin-left: auto;
+        background-color: #FFF;
+      }
+
+      .comment {
+        border: 1px solid gray;
+        margin: .25em;
+      }
+
+      span {
+        font-family: Sans-serif;
+        font-size: .8em;
+        font-weight: bold;
+        margin-left: .25em; 
+      }
+
+      .message {
+        font-family: Sans-serif;
+        font-size: .75em;
+        margin-left: .25em;
+        color: gray;
+      }
+
+      #container {
+        display: flex;
+        height: 500px;
+      }
+
+      .selected {
+        border: 1px solid hotpink;
+      }
+    </style>
+    <div id="container">
+      <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
+
+      <iron-list id="comment-list" selection-enabled items="{{comments}}">
+        <template>
+          <div class="comment"  moment="{{item.createdAt}}">
+            <span>{{item.author}}</span>
+            <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+          </div>
+        </template>
+      </iron-list> 
+    </div> 
+  </template>
+</dom-module>
+<script>
+  //Define Polymer element
+
+  Polymer({
+    is: 'interactive-player',
+    properties: {
+      /****** @Comments
+      ** The comments attribute expects an array of objects containing the video comments and the following data about them:
+      **   author - the name of the user who wrote the comment 
+      **   text - the comment text
+      **   createdAt - a decimal number representing the place in the video where the comment was made
+      *****/
+      comments: {
+        type: Array,
+        value: [{
+          author: 'Timmy',
+          text: 'Bacon ipsum dolor amet pancetta beef drumstick ut aute ball tip velit, dolore cillum lorem picanha culpa strip steak pastrami shoulder. Commodo capicola biltong, jerky anim aliquip qui pariatur. Biltong t-bone in, bacon adipisicing duis prosciutto drumstick. Minim biltong rump tenderloin ex ullamco in brisket non ut. Brisket anim esse elit. Ut officia incididunt shoulder andouille occaecat.', 
+          createdAt: 0
+        },
+        {
+          author: 'Barbara',
+          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
+          createdAt: 0.999
+        },
+        {
+          author: 'Susan',
+          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
+          createdAt: 0.7
+        },
+        {
+          author: 'Susan',
+          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
+          createdAt: 0.5
+        },
+        {
+          author: 'Susan',
+          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
+          createdAt: 0.5
+        },
+        {
+          author: 'Barbara',
+          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
+          createdAt: 0.888
+        },
+        {
+          author: 'Barbara',
+          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
+          createdAt: 0.4
+        },
+        {
+          author: 'Barbara',
+          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
+          createdAt: 0.543
+        },
+        {
+          author: 'Barbara',
+          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
+          createdAt: 0.678
+        }]
+      },
+      source: {
+        type: String,
+        value: "https://player.vimeo.com/video/89662194?api=1"
+      }
+    },
+    attached: function(){
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      var component = this;
+      $('#video').on("playProgress", function(event, data){
+        component.selectRelevant(data.percent);
+      });
+    },
+    selectRelevant: function(percent){
+      var list = $('iron-list')[0].getEffectiveChildren();
+      console.log(list);
+      //If there is a comment with a video % === current %
+      for(var i = 1; i <list.length; i++){
+        if(list[i].moment === percent){
+        //Add selected class to that comment
+          this.toggleClass('selected', true, list[i]);
+        }
+      }
+    }
+  });
+</script>
