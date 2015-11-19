@@ -1,0 +1,25 @@
+{
+  "name": "interactive-player",
+  "version": "0.0.0",
+  "homepage": "https://github.com/lophead/interactive-player",
+  "authors": [
+    "Jonathan Mason <jmason.p@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "iron-ajax": "PolymerElements/iron-ajax#^1.0.0",
+    "iron-list": "PolymerElements/iron-list#^1.0.0",
+    "polymer": "Polymer/polymer#^1.2.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  }
+}
