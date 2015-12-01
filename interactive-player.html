@@ -10,7 +10,7 @@
         width: 65%;
         margin-right: auto;
         margin-left: auto;
-        
+        margin-top: .25em;
       }
 
       #comment-list {
@@ -80,7 +80,7 @@
         value: [{
           author: 'Timmy',
           text: 'Bacon ipsum dolor amet pancetta beef drumstick ut aute ball tip velit, dolore cillum lorem picanha culpa strip steak pastrami shoulder. Commodo capicola biltong, jerky anim aliquip qui pariatur. Biltong t-bone in, bacon adipisicing duis prosciutto drumstick. Minim biltong rump tenderloin ex ullamco in brisket non ut. Brisket anim esse elit. Ut officia incididunt shoulder andouille occaecat.', 
-          createdAt: 0
+          createdAt: 0.002
         },
         {
           author: 'Barbara',
@@ -126,19 +126,24 @@
       source: {
         type: String,
         value: "https://player.vimeo.com/video/89662194?api=1"
+      },
+      location: {
+        type: Number,
+        value: 0
       }
     },
     attached: function(){
-      // `attached` fires once the element and its parents have been inserted
-      // into a document.
+      // `attached` fires once the element and its parents have been inserted into a document.
       var component = this;
+      //Create event listener for comment highligting
       $('#video').on("playProgress", function(event, data){
         component.selectRelevant(data.percent);
+        component.location = data.percent;
+        console.log('Current location: ', component.location);
       });
     },
     selectRelevant: function(percent){
       var list = $('iron-list')[0].getEffectiveChildren();
-      console.log(list);
       //If there is a comment with a video % === current %
       for(var i = 1; i <list.length; i++){
         if(list[i].moment === percent){
