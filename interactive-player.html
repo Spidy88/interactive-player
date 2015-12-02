@@ -1,4 +1,5 @@
 <link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../iron-input/iron-input.html">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
 
@@ -59,7 +60,9 @@
             <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
           </div>
         </template>
-      </iron-list> 
+      </iron-list>
+      <input is="iron-input" bind-value="{{user-input}}">
+      <button on-click="createComment"></button>
     </div> 
   </template>
 </dom-module>
@@ -130,6 +133,9 @@
       location: {
         type: Number,
         value: 0
+      },
+      "user-input": {
+        type: String
       }
     },
     attached: function(){
@@ -138,8 +144,8 @@
       //Create event listener for comment highligting
       $('#video').on("playProgress", function(event, data){
         component.selectRelevant(data.percent);
+        //Update component's location property on any progress. 
         component.location = data.percent;
-        console.log('Current location: ', component.location);
       });
     },
     selectRelevant: function(percent){
@@ -151,6 +157,7 @@
           this.toggleClass('selected', true, list[i]);
         }
       }
-    }
+    },
+    createComment: function(){}
   });
 </script>
