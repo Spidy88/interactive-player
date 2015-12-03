@@ -45,14 +45,15 @@
         display: flex;
         height: 500px;
       }
-
+      #list {
+        height: 500px;
+      }
       .selected {
-        border: 1px solid hotpink;
+        background-color: sandybrown;
       }
     </style>
     <div id="container">
       <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
-
       <iron-list id="comment-list" selection-enabled items="{{comments}}">
         <template>
           <div class="comment"  moment="{{item.createdAt}}">
@@ -61,14 +62,16 @@
           </div>
         </template>
       </iron-list>
-      <input is="iron-input" bind-value="{{user-input}}">
-      <button on-click="createComment"></button>
+      <div id="inputComment">
+        <input is="iron-input" bind-value="{{user-input}}">
+        <button on-click="createComment">Add comment!</button>
+        <button class="" on-click="toggleHighlight">Comment highlighting</button>
+      </div>
     </div> 
   </template>
 </dom-module>
 <script>
   //Define Polymer element
-
   Polymer({
     is: 'interactive-player',
     properties: {
@@ -135,15 +138,22 @@
         value: 0
       },
       "user-input": {
-        type: String
+        type: String,
+        value: 'Say something helpful!'
+      },
+      highlight: {
+        type: Boolean,
+        value: true
       }
     },
     attached: function(){
       // `attached` fires once the element and its parents have been inserted into a document.
       var component = this;
-      //Create event listener for comment highligting
+      //Create event listener for comment highlighting
       $('#video').on("playProgress", function(event, data){
-        component.selectRelevant(data.percent);
+        if(component.highlight){
+          component.selectRelevant(data.percent);
+        }
         //Update component's location property on any progress. 
         component.location = data.percent;
       });
@@ -152,12 +162,33 @@
       var list = $('iron-list')[0].getEffectiveChildren();
       //If there is a comment with a video % === current %
       for(var i = 1; i <list.length; i++){
-        if(list[i].moment === percent){
+        if(percent >= list[i].moment && list[i].moment * 1.1 >= percent){
         //Add selected class to that comment
           this.toggleClass('selected', true, list[i]);
+        } else {
+          this.toggleClass('selected', false, list[i]);
         }
       }
     },
-    createComment: function(){}
+    createComment: function(){
+      var comment = {
+        author: 'Guest User',
+        text: this["user-input"],
+        createdAt: this.location
+      };
+      
+      console.log(comment);
+    },
+    toggleHighlight: function(){
+      //Reverse highlight boolean
+      this.highlight = !this.highlight;
+      //If highlighting is being turned off, remove active highlights
+      if(!this.highlight){
+        var list = $('iron-list')[0].getEffectiveChildren();
+        for(var i = 0; i < list.length; i++){
+          this.toggleClass('selected', false, list[i]);
+        }
+      }
+    }
   });
 </script>
