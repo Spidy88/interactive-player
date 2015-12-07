@@ -1,4 +1,6 @@
+<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-list/iron-list.html">
+<link rel="import" href="../iron-input/iron-input.html">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
 
@@ -10,12 +12,12 @@
         width: 65%;
         margin-right: auto;
         margin-left: auto;
-        
       }
 
       #comment-list {
         display: block;
-        width: 35%;
+        width: 100%;
+        height: 90%;
         margin-right: auto;
         margin-left: auto;
         background-color: #FFF;
@@ -40,112 +42,192 @@
         color: gray;
       }
 
-      #container {
+      .container, #sidebar {
         display: flex;
         height: 500px;
       }
 
-      .selected {
-        border: 1px solid hotpink;
+      #sidebar {
+        width: 35%;
+        flex-direction: column;
       }
-    </style>
-    <div id="container">
-      <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
 
-      <iron-list id="comment-list" selection-enabled items="{{comments}}">
-        <template>
-          <div class="comment"  moment="{{item.createdAt}}">
-            <span>{{item.author}}</span>
-            <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
-          </div>
-        </template>
-      </iron-list> 
+      #input-block {
+        width: 100%;
+        height: 10%;
+      }
+
+      .selected {
+        background-color: sandybrown;
+      }
+
+      input {
+        width: 70%;
+        height: 90%;
+        text-align: left;
+      }
+
+    </style>
+    <div class="container">
+      <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
+      <div id="sidebar">
+        <iron-list id="comment-list" selection-enabled items="{{comments}}">
+          <template>
+            <div class="comment"  moment="{{item.createdAt}}">
+              <span>{{item.author}}</span>
+              <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+            </div>
+          </template>
+        </iron-list>
+        <div id="input-block">
+          <input is="iron-input" bind-value="{{user-input}}" on-click="beginEditing">
+          <button on-click="createComment">Add comment!</button>
+          <button class="" on-click="toggleHighlight">Comment highlighting</button>
+        </div>
+      </div>
     </div> 
   </template>
 </dom-module>
 <script>
   //Define Polymer element
-
   Polymer({
     is: 'interactive-player',
     properties: {
-      /****** @Comments
-      ** The comments attribute expects an array of objects containing the video comments and the following data about them:
-      **   author - the name of the user who wrote the comment 
-      **   text - the comment text
-      **   createdAt - a decimal number representing the place in the video where the comment was made
+      /** 
+      *  The `comments` attribute expects an array of objects containing the video comments and the following data about 
+      *  them: 
+      *  `author` - (String) name of the user who wrote the comment 
+      *  `text` - provided by player in comment creation
+      *  `createdAt` - provided by player in comment creation
+      *  was made
       *****/
       comments: {
         type: Array,
-        value: [{
-          author: 'Timmy',
-          text: 'Bacon ipsum dolor amet pancetta beef drumstick ut aute ball tip velit, dolore cillum lorem picanha culpa strip steak pastrami shoulder. Commodo capicola biltong, jerky anim aliquip qui pariatur. Biltong t-bone in, bacon adipisicing duis prosciutto drumstick. Minim biltong rump tenderloin ex ullamco in brisket non ut. Brisket anim esse elit. Ut officia incididunt shoulder andouille occaecat.', 
-          createdAt: 0
-        },
-        {
-          author: 'Barbara',
-          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
-          createdAt: 0.999
-        },
-        {
-          author: 'Susan',
-          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
-          createdAt: 0.7
-        },
-        {
-          author: 'Susan',
-          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
-          createdAt: 0.5
-        },
-        {
-          author: 'Susan',
-          text: 'Dolore turducken venison dolore do frankfurter flank nostrud irure. Nisi labore brisket nulla. Pancetta cupidatat proident eiusmod. Filet mignon in nisi, pig excepteur pork belly velit ea id kielbasa ball tip.', 
-          createdAt: 0.5
-        },
-        {
-          author: 'Barbara',
-          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
-          createdAt: 0.888
-        },
-        {
-          author: 'Barbara',
-          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
-          createdAt: 0.4
-        },
-        {
-          author: 'Barbara',
-          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
-          createdAt: 0.543
-        },
-        {
-          author: 'Barbara',
-          text: 'Porchetta ut elit do. Ham hock ball tip in cupidatat ipsum pig consectetur beef. Pig fugiat duis prosciutto, eu boudin dolor velit. Frankfurter hamburger chuck drumstick aliquip venison ut pork loin ham ground round pancetta porchetta.', 
-          createdAt: 0.678
-        }]
       },
+      /**
+      * URL of the Vimeo video to be used
+      * @type String 
+      **/
       source: {
         type: String,
         value: "https://player.vimeo.com/video/89662194?api=1"
+      },
+      /**
+      * A decimal number representing the location (percentage) in the video where the comment. Used in 
+      * comment animations.
+      **/
+      location: {
+        type: Number,
+        value: 0
+      },
+      /**
+      * Comment entered in by the user. 
+      **/
+      "user-input": {
+        type: String,
+        value: 'Say something helpful!'
+      },
+      /**
+      * Boolean controlling comment highlighting. Default to true. 
+      **/
+      highlight: {
+        type: Boolean,
+        value: true
+      },
+      /**
+      * Boolean controlling use of new location for comment creation.
+      **/
+      editing: {
+        type: Boolean,
+        value: false
+      },
+      /**
+      * Number (decimal) representing the location of the video where the comment was initiated. 
+      **/
+      "new-comment-location": {
+        type: Number
       }
     },
+    /**
+    * On insertion into the document, the player esablishes a listener for the video's progress so that
+    * it can perform various functions based on the moment of the video. 
+    **/
     attached: function(){
-      // `attached` fires once the element and its parents have been inserted
-      // into a document.
       var component = this;
+     
       $('#video').on("playProgress", function(event, data){
-        component.selectRelevant(data.percent);
+        //If highlighting is enabled, selectRelevant at each moment
+        if(component.highlight){
+          component.selectRelevant(data.percent);
+        }
+        //Update component's location property on any progress. 
+        component.location = data.percent;
       });
     },
+    /**
+     * Highlights relevant comments based on the video location. 
+     *
+     * @param {number} the video's current location, as a percentage
+     */
     selectRelevant: function(percent){
       var list = $('iron-list')[0].getEffectiveChildren();
-      console.log(list);
       //If there is a comment with a video % === current %
       for(var i = 1; i <list.length; i++){
-        if(list[i].moment === percent){
+        //Add some 
+        if(percent >= list[i].moment && list[i].moment * 1.1 >= percent){
         //Add selected class to that comment
           this.toggleClass('selected', true, list[i]);
+        } else {
+          this.toggleClass('selected', false, list[i]);
         }
       }
+    },
+    /**
+    * Creates a comment object consisting of the new-comment-location and user-input 
+    * Comment data is passed to the environment as event detail 
+    * 
+    * @event new-comment
+    * @detail {{
+        text: string,
+        createdAt: number
+      }}
+    */
+    createComment: function(){
+      var comment = {
+        text: this['user-input'],
+        createdAt: this["new-comment-location"]
+      };
+
+      this.fire('new-comment', comment);
+      
+      //Clear input and reset editing status
+      this['user-input'] = '';
+      this.editing = false;
+    },
+    /**
+    * Adds or removes an element's higlight
+    **/
+    toggleHighlight: function(){
+      //Reverse highlight boolean
+      this.highlight = !this.highlight;
+      //If highlighting is being turned off, remove active highlights
+      if(!this.highlight){
+        var list = $('iron-list')[0].getEffectiveChildren();
+        for(var i = 0; i < list.length; i++){
+          this.toggleClass('selected', false, list[i]);
+        }
+      }
+    },
+    /**
+    * Creates an editing session when the user clicks the new comment input 
+    **/
+    beginEditing: function(){
+      if(this.editing){ 
+        return; 
+      }
+      
+      this.editing = true;
+      this["new-comment-location"] = this.location;
     }
   });
 </script>
