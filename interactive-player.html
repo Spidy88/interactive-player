@@ -12,12 +12,12 @@
         width: 65%;
         margin-right: auto;
         margin-left: auto;
-        margin-top: .25em;
       }
 
       #comment-list {
         display: block;
-        width: 35%;
+        width: 100%;
+        height: 90%;
         margin-right: auto;
         margin-left: auto;
         background-color: #FFF;
@@ -42,29 +42,48 @@
         color: gray;
       }
 
-      #container {
+      .container, #sidebar {
         display: flex;
         height: 500px;
       }
-  
+
+      #sidebar {
+        width: 35%;
+        flex-direction: column;
+      }
+
+      #input-block {
+        width: 100%;
+        height: 10%;
+      }
+
       .selected {
         background-color: sandybrown;
       }
+
+      input {
+        width: 70%;
+        height: 90%;
+        text-align: left;
+      }
+
     </style>
-    <div id="container">
+    <div class="container">
       <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
-      <iron-list id="comment-list" selection-enabled items="{{comments}}">
-        <template>
-          <div class="comment"  moment="{{item.createdAt}}">
-            <span>{{item.author}}</span>
-            <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
-          </div>
-        </template>
-      </iron-list>
-      <div id="inputComment">
-        <input is="iron-input" bind-value="{{user-input}}" on-click="beginEditing">
-        <button on-click="createComment">Add comment!</button>
-        <button class="" on-click="toggleHighlight">Comment highlighting</button>
+      <div id="sidebar">
+        <iron-list id="comment-list" selection-enabled items="{{comments}}">
+          <template>
+            <div class="comment"  moment="{{item.createdAt}}">
+              <span>{{item.author}}</span>
+              <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+            </div>
+          </template>
+        </iron-list>
+        <div id="input-block">
+          <input is="iron-input" bind-value="{{user-input}}" on-click="beginEditing">
+          <button on-click="createComment">Add comment!</button>
+          <button class="" on-click="toggleHighlight">Comment highlighting</button>
+        </div>
       </div>
     </div> 
   </template>
