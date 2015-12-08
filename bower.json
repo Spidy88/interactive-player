@@ -15,7 +15,7 @@
   ],
   "dependencies": {
     "iron-ajax": "PolymerElements/iron-ajax#^1.0.0",
-    "iron-input": "PolymerElements/iron-input#^1.0.0",
+    "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#~1.0.10",
     "iron-list": "PolymerElements/iron-list#^1.0.0",
     "polymer": "Polymer/polymer#^1.2.0"
   },
