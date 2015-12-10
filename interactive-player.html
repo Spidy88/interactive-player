@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
 
@@ -14,10 +14,16 @@
         margin-left: auto;
       }
 
+      #sidebar {
+        width: 35%;
+        flex-direction: column;
+        visibility: collapse;
+      }
+
       #comment-list {
         display: block;
         width: 100%;
-        height: 90%;
+        height: 100%;
         margin-right: auto;
         margin-left: auto;
         background-color: #FFF;
@@ -47,26 +53,41 @@
         height: 500px;
       }
 
-      #sidebar {
-        width: 35%;
-        flex-direction: column;
-      }
-
       #input-block {
+        display: flex;
         width: 100%;
         height: 10%;
+        flex-direction: column;
       }
 
       .selected {
         background-color: sandybrown;
       }
 
-      input {
-        width: 70%;
-        height: 90%;
+      iron-autogrow-textarea {
+        width: 99%;
+        height: 20%;
         text-align: left;
+        background-color: white;
       }
 
+      #highlight-btn {
+        background-color: #3adb76;
+        
+      }
+
+      .disabled {
+        background-color: #FA001D;
+      }
+
+      button {
+        border: 1px solid transparent;
+        color: white;
+      }
+
+      button:hover {
+        border: 1px solid black;
+      }      
     </style>
     <div class="container">
       <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
@@ -79,10 +100,10 @@
             </div>
           </template>
         </iron-list>
+        <iron-autogrow-textarea id="cmt-blk" bindValue="{{user-input}}" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
         <div id="input-block">
-          <input is="iron-input" bind-value="{{user-input}}" on-click="beginEditing">
-          <button on-click="createComment">Add comment!</button>
-          <button class="" on-click="toggleHighlight">Comment highlighting</button>
+          <button class="disabled" on-click="createComment">Add comment!</button>
+          <button id="highlight-btn" on-click="toggleHighlight">Comment highlighting</button>
         </div>
       </div>
     </div> 
