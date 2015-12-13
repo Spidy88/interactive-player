@@ -7,18 +7,18 @@
 <dom-module id="interactive-player">
   <template>
     <style>
-      #video {
+      /*#video {
         display: block;
         width: 65%;
         margin-right: auto;
         margin-left: auto;
-      }
+      }*/
 
-      #sidebar {
+      /*#sidebar {
         width: 35%;
         flex-direction: column;
         visibility: collapse;
-      }
+      }*/
 
       #comment-list {
         display: block;
@@ -48,7 +48,7 @@
         color: gray;
       }
 
-      .container, #sidebar {
+      #container, #sidebar {
         display: flex;
         height: 500px;
       }
@@ -87,23 +87,66 @@
 
       button:hover {
         border: 1px solid black;
-      }      
+      } 
+
+      /*Experimental styles*/
+
+      #container {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      #video {
+        width: 80%;
+        height: 100%;
+        position: relative;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        -webkit-transition: .3s ease all;
+        transition: .3s ease all;
+        padding: 0px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+      }
+
+      #sidebar {
+        width: 300px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: -325px;
+        background: #428bca;
+        padding: 15px;
+      }
+
+      #container.show-nav #video {
+        -webkit-transform: translateX(300px);
+        transform: translateX(300px);
+      }
+
     </style>
-    <div class="container">
-      <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
-      <div id="sidebar">
-        <iron-list id="comment-list" selection-enabled items="{{comments}}">
-          <template>
-            <div class="comment"  moment="{{item.createdAt}}">
-              <span>{{item.author}}</span>
-              <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
-            </div>
-          </template>
-        </iron-list>
-        <iron-autogrow-textarea id="cmt-blk" bindValue="{{user-input}}" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
-        <div id="input-block">
-          <button class="disabled" on-click="createComment">Add comment!</button>
-          <button id="highlight-btn" on-click="toggleHighlight">Comment highlighting</button>
+    <div id="container" on-click="toggleComments">
+      <div id="video">
+        <iframe src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen>
+        </iframe>  
+        <div id="sidebar">
+          <iron-list id="comment-list" selection-enabled items="{{comments}}">
+            <template>
+              <div class="comment"  moment="{{item.createdAt}}">
+                <span>{{item.author}}</span>
+                <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+              </div>
+            </template>
+          </iron-list>
+          <iron-autogrow-textarea id="cmt-blk" bindValue="{{user-input}}" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
+          <div id="input-block">
+            <button class="disabled" on-click="createComment">Add comment!</button>
+            <button id="highlight-btn" on-click="toggleHighlight">Comment highlighting</button>
+          </div>
         </div>
       </div>
     </div> 
@@ -249,6 +292,13 @@
       
       this.editing = true;
       this["new-comment-location"] = this.location;
+    },
+    toggleComments: function(){
+      if($('#container').hasClass('show-nav')){
+        $('#container').removeClass('show-nav');
+      } else {
+        $('#container').addClass('show-nav');
+      }
     }
   });
 </script>
