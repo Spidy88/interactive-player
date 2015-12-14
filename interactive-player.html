@@ -23,7 +23,7 @@
       #comment-list {
         display: block;
         width: 100%;
-        height: 100%;
+        height: 70%;
         margin-right: auto;
         margin-left: auto;
         background-color: #FFF;
@@ -54,7 +54,6 @@
       }
 
       #input-block {
-        display: flex;
         width: 100%;
         height: 10%;
         flex-direction: column;
@@ -98,7 +97,7 @@
       }
 
       #video {
-        width: 80%;
+        width: 60%;
         height: 100%;
         position: relative;
         -webkit-transform: translateX(0);
@@ -114,13 +113,13 @@
       }
 
       #sidebar {
-        width: 300px;
+        display: block;
+        width: 50%;
         height: 100%;
         position: absolute;
         top: 0;
-        left: -325px;
+        left: -50%;
         background: #428bca;
-        padding: 15px;
       }
 
       #container.show-nav #video {
@@ -142,8 +141,8 @@
               </div>
             </template>
           </iron-list>
-          <iron-autogrow-textarea id="cmt-blk" bindValue="{{user-input}}" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
           <div id="input-block">
+          <iron-autogrow-textarea id="cmt-blk" bindValue="{{user-input}}" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
             <button class="disabled" on-click="createComment">Add comment!</button>
             <button id="highlight-btn" on-click="toggleHighlight">Comment highlighting</button>
           </div>
