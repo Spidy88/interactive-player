@@ -1,89 +1,238 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
 
 <dom-module id="interactive-player">
   <template>
     <style>
-      #video {
+      /*#video {
         display: block;
         width: 65%;
         margin-right: auto;
         margin-left: auto;
-      }
+      }*/
+
+      /*#sidebar {
+        width: 35%;
+        flex-direction: column;
+        visibility: collapse;
+      }*/
 
       #comment-list {
         display: block;
         width: 100%;
-        height: 90%;
+        height: 70%;
         margin-right: auto;
         margin-left: auto;
         background-color: #FFF;
       }
 
+      #input-block {
+        width: 100%;
+        height: 30%;
+        flex-direction: column;
+      }
       .comment {
-        border: 1px solid gray;
-        margin: .25em;
+        border-bottom: 1px solid gray;
       }
 
       span {
-        font-family: Sans-serif;
+        font-family: "Source Sans Pro","Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: .8em;
         font-weight: bold;
         margin-left: .25em; 
       }
 
       .message {
-        font-family: Sans-serif;
+        font-family: "Source Sans Pro","Helvetica Neue", Helvetica, Arial, sans-serif;
         font-size: .75em;
         margin-left: .25em;
         color: gray;
       }
 
-      .container, #sidebar {
+      #container, #sidebar {
         display: flex;
         height: 500px;
       }
 
-      #sidebar {
-        width: 35%;
-        flex-direction: column;
-      }
-
-      #input-block {
-        width: 100%;
-        height: 10%;
-      }
 
       .selected {
-        background-color: sandybrown;
+        background-color: #DCE827;
       }
 
-      input {
-        width: 70%;
-        height: 90%;
+      iron-autogrow-textarea {
+        width: 99%;
+        height: 50%;
         text-align: left;
+        background-color: white;
+        font-family: "Source Sans Pro","Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      
+      button {
+        border: 1px solid transparent;
+        font-family: "Helvetica Neue",Helvetica,Helvetica,Arial,sans-serif;
+        font-weight: 700;
+        font-size: 1em;
+        color: white;
+        display: block;
+        width: 100%;
+        height: 24%;
+      }
+
+      .highlight-on {
+        background-color: #3adb76;
+      }
+
+      .highlight-on:hover {
+        background-color: #17D05C;
+      }
+
+      .highlight-off {
+        background-color: #ff5a56;
+      }
+
+      .highlight-off:hover {
+        background-color: #ff1612;
+      }      
+      
+      .submit {
+        background-color: #0298f5;
+      }
+
+      .submit:hover {
+        background-color: #027dc4;
+      } 
+
+      /*Experimental styles*/
+
+      #container {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      #slider {
+        width: 60%;
+        height: 100%;
+        position: relative;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+        -webkit-transition: .3s ease all;
+        transition: .3s ease all;
+        padding: 0px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+      }
+
+      #sidebar {
+        display: block;
+        width: 300px;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: -300px;
+        overflow: scroll;
+      }
+
+      #container.show-nav #slider {
+        -webkit-transform: translateX(300px);
+        transform: translateX(300px);
+      }
+
+      .tab {
+        padding: 6px;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        text-align: center;
+        background-color: #0298f5;
+        color: white;
+        border: 1px solid #00008b;
+        font-family: Arial,sans-serif;
+        height: 50px;
+        width: 150px;
+        position: relative;
+        right: -92%;
+        top: -57%;
+        transform: rotate(90deg);
+        z-index: -1;
+      }
+
+      #video {
+        z-index: 1;
+      }
+      /******** MEDIA QUERIES *****/
+
+      @media (max-width: 835px) {
+        
+        #sidebar, .tab {
+          display: none;
+        }
+        
+        #slider, #video {
+          width: 100%;
+        }
+
+      }
+
+      @media (max-width: 860px) {
+        .tab {
+          height: 25px;
+          right: -87%;
+        }
+      }
+
+      @media (max-width: 938px){
+        .tab {
+          height: 25px;
+          right: -88%;
+        }
+      }
+
+      @media (min-width: 939px) {
+        .tab {
+          right: -89%;
+        }
+      }
+
+      @media (min-width: 1062px) {
+        .tab {
+          right: -91%;
+        }
+      }
+
+      @media (min-width: 1289px) {
+        .tab {
+          right: -93%;
+        }
       }
 
     </style>
-    <div class="container">
-      <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
-      <div id="sidebar">
-        <iron-list id="comment-list" selection-enabled items="{{comments}}">
-          <template>
-            <div class="comment"  moment="{{item.createdAt}}">
-              <span>{{item.author}}</span>
-              <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
-            </div>
-          </template>
-        </iron-list>
-        <div id="input-block">
-          <input is="iron-input" bind-value="{{user-input}}" on-click="beginEditing">
-          <button on-click="createComment">Add comment!</button>
-          <button class="" on-click="toggleHighlight">Comment highlighting</button>
+    <div id="container">
+      <div id="slider">
+        <iframe id="video" src="{{source}}" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen>
+        </iframe>  
+        <div id="sidebar">
+          <iron-list id="comment-list" selection-enabled items="{{comments}}">
+            <template>
+              <div class="comment"  moment="{{item.createdAt}}">
+                <span>{{item.author}}</span>
+                <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+              </div>
+            </template>
+          </iron-list>
+          <div id="input-block">
+            <iron-autogrow-textarea id="comment-input" bind-value="{{user-input}}" on-click="beginEditing" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
+            <button class="submit" on-click="createComment">Add comment!</button>
+            <button class="highlight-on" on-click="toggleHighlight">Comment highlighting: ON</button>
+          </div>
         </div>
+        <button class="tab" on-click="toggleComments">Comments</button>
       </div>
     </div> 
   </template>
@@ -124,8 +273,7 @@
       * Comment entered in by the user. 
       **/
       "user-input": {
-        type: String,
-        value: 'Say something helpful!'
+        type: String
       },
       /**
       * Boolean controlling comment highlighting. Default to true. 
@@ -199,7 +347,7 @@
       };
 
       this.fire('new-comment', comment);
-      
+
       //Clear input and reset editing status
       this['user-input'] = '';
       this.editing = false;
@@ -217,6 +365,14 @@
           this.toggleClass('selected', false, list[i]);
         }
       }
+
+      if(this.highlight){
+        $('.highlight-off').addClass('highlight-on').removeClass('highlight-off');
+        $('.highlight-on').text('Comment highlighting: ON');
+      } else {
+        $('.highlight-on').addClass('highlight-off').removeClass('highlight-on');
+        $('.highlight-off').text('Comment highlighting: OFF');
+      }
     },
     /**
     * Creates an editing session when the user clicks the new comment input 
@@ -225,9 +381,16 @@
       if(this.editing){ 
         return; 
       }
-      
+
       this.editing = true;
       this["new-comment-location"] = this.location;
+    },
+    toggleComments: function(){
+      if($('#container').hasClass('show-nav')){
+        $('#container').removeClass('show-nav');
+      } else {
+        $('#container').addClass('show-nav');
+      }
     }
   });
 </script>
