@@ -70,16 +70,7 @@
         background-color: white;
         font-family: "Source Sans Pro","Helvetica Neue", Helvetica, Arial, sans-serif;
       }
-
-      #highlight-btn {
-        background-color: #3adb76;
-        
-      }
-
-      .submit {
-        background-color: #0298f5;
-      }
-
+      
       button {
         border: 1px solid transparent;
         font-family: "Helvetica Neue",Helvetica,Helvetica,Arial,sans-serif;
@@ -89,6 +80,26 @@
         display: block;
         width: 100%;
         height: 24%;
+      }
+
+      .highlight-on {
+        background-color: #3adb76;
+      }
+
+      .highlight-on:hover {
+        background-color: #17D05C;
+      }
+
+      .highlight-off {
+        background-color: #ff5a56;
+      }
+
+      .highlight-off:hover {
+        background-color: #ff1612;
+      }      
+      
+      .submit {
+        background-color: #0298f5;
       }
 
       .submit:hover {
@@ -168,7 +179,7 @@
           <div id="input-block">
             <iron-autogrow-textarea id="comment-input" bind-value="{{user-input}}" on-click="beginEditing" placeholder="Write something helpful!" max-rows="4"></iron-autogrow-textarea>
             <button class="submit" on-click="createComment">Add comment!</button>
-            <button id="highlight-btn" on-click="toggleHighlight">Comment highlighting</button>
+            <button class="highlight-on" on-click="toggleHighlight">Comment highlighting: ON</button>
           </div>
         </div>
         <button class="tab" on-click="toggleComments">Show Comments</button>
@@ -303,6 +314,14 @@
         for(var i = 0; i < list.length; i++){
           this.toggleClass('selected', false, list[i]);
         }
+      }
+
+      if(this.highlight){
+        $('.highlight-off').addClass('highlight-on').removeClass('highlight-off');
+        $('.highlight-on').text('Comment highlighting: ON');
+      } else {
+        $('.highlight-on').addClass('highlight-off').removeClass('highlight-on');
+        $('.highlight-off').text('Comment highlighting: OFF');
       }
     },
     /**
