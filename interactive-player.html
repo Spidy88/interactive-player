@@ -60,7 +60,7 @@
 
 
       .selected {
-        background-color: sandybrown;
+        background-color: #DCE827;
       }
 
       iron-autogrow-textarea {
@@ -150,16 +150,66 @@
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
         text-align: center;
-        background-color: #add8e6;
-        color: #00008b;
+        background-color: #0298f5;
+        color: white;
         border: 1px solid #00008b;
         font-family: Arial,sans-serif;
-        height: 10%;
-        width: 15%;
+        height: 50px;
+        width: 150px;
         position: relative;
-        right: -95.4%;
+        right: -92%;
         top: -57%;
         transform: rotate(90deg);
+        z-index: -1;
+      }
+
+      #video {
+        z-index: 1;
+      }
+      /******** MEDIA QUERIES *****/
+
+      @media (max-width: 835px) {
+        
+        #sidebar, .tab {
+          display: none;
+        }
+        
+        #slider, #video {
+          width: 100%;
+        }
+
+      }
+
+      @media (max-width: 860px) {
+        .tab {
+          height: 25px;
+          right: -87%;
+        }
+      }
+
+      @media (max-width: 938px){
+        .tab {
+          height: 25px;
+          right: -88%;
+        }
+      }
+
+      @media (min-width: 939px) {
+        .tab {
+          right: -89%;
+        }
+      }
+
+      @media (min-width: 1062px) {
+        .tab {
+          right: -91%;
+        }
+      }
+
+      @media (min-width: 1289px) {
+        .tab {
+          right: -93%;
+        }
       }
 
     </style>
@@ -182,7 +232,7 @@
             <button class="highlight-on" on-click="toggleHighlight">Comment highlighting: ON</button>
           </div>
         </div>
-        <button class="tab" on-click="toggleComments">Show Comments</button>
+        <button class="tab" on-click="toggleComments">Comments</button>
       </div>
     </div> 
   </template>
