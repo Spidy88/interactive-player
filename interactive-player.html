@@ -1,6 +1,6 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-list/iron-list.html">
-<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-list/iron-list.html">
+<link rel="import" href="bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 <script src="vendor/Vimeo-jQuery-API-0.10.1/dist/jquery.vimeo.api.min.js"></script>
 <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
@@ -8,18 +8,6 @@
 <dom-module id="interactive-player">
   <template>
     <style>
-      /*#video {
-        display: block;
-        width: 65%;
-        margin-right: auto;
-        margin-left: auto;
-      }*/
-
-      /*#sidebar {
-        width: 35%;
-        flex-direction: column;
-        visibility: collapse;
-      }*/
 
       #comment-list {
         display: block;
@@ -220,9 +208,9 @@
         <div id="sidebar">
           <iron-list id="comment-list" selection-enabled items="{{comments}}">
             <template>
-              <div class="comment"  moment="{{item.createdAt}}">
+              <div class="comment"  moment="{{item.createdAt}}"><!-- moment is a property that enables comment highlighting -->
                 <span>{{item.author}}</span>
-                <div class="message">{{item.text}}<div>@{{item.createdAt}}</div></div>
+                <div class="message">{{item.text}}<div>@{{item.timestamp}}</div></div>
               </div>
             </template>
           </iron-list>
@@ -246,9 +234,9 @@
       *  The `comments` attribute expects an array of objects containing the video comments and the following data about 
       *  them: 
       *  `author` - (String) name of the user who wrote the comment 
-      *  `text` - provided by player in comment creation
-      *  `createdAt` - provided by player in comment creation
-      *  was made
+      *  `text` - (String) message text 
+      *  `createdAt` - (Number) moment of comment creation (in seconds) 
+      *  `timestamp` - (String) a human readable conversion of the createdAt time 
       *****/
       comments: {
         type: Array,
@@ -262,7 +250,7 @@
         value: "https://player.vimeo.com/video/89662194?api=1"
       },
       /**
-      * A decimal number representing the location (percentage) in the video where the comment. Used in 
+      * A number representing the location (seconds) in the video where the comment was created. Used in 
       * comment animations.
       **/
       location: {
@@ -270,7 +258,7 @@
         value: 0
       },
       /**
-      * Comment entered in by the user. 
+      * Comment entered by the user. 
       **/
       "user-input": {
         type: String
@@ -290,7 +278,7 @@
         value: false
       },
       /**
-      * Number (decimal) representing the location of the video where the comment was initiated. 
+      * Number (seconds) representing the location of the video where the comment was initiated. 
       **/
       "new-comment-location": {
         type: Number
@@ -306,23 +294,24 @@
       $('#video').on("playProgress", function(event, data){
         //If highlighting is enabled, selectRelevant at each moment
         if(component.highlight){
-          component.selectRelevant(data.percent);
+          component.selectRelevant(Math.floor(data.seconds));
         }
         //Update component's location property on any progress. 
-        component.location = data.percent;
+        component.location = Math.floor(data.seconds);
       });
+
     },
     /**
      * Highlights relevant comments based on the video location. 
      *
-     * @param {number} the video's current location, as a percentage
+     * @param {currentTime} the video's current location, in seconds 
      */
-    selectRelevant: function(percent){
+    selectRelevant: function(currentTime){
       var list = $('iron-list')[0].getEffectiveChildren();
-      //If there is a comment with a video % === current %
+      
       for(var i = 1; i <list.length; i++){
-        //Add some 
-        if(percent >= list[i].moment && list[i].moment * 1.1 >= percent){
+      //If there is a comment with a video % === current %
+        if(currentTime >= list[i].moment - 5 && list[i].moment + 5 >= currentTime){
         //Add selected class to that comment
           this.toggleClass('selected', true, list[i]);
         } else {
@@ -337,13 +326,15 @@
     * @event new-comment
     * @detail {{
         text: string,
-        createdAt: number
+        createdAt: number,
+        timestamp: string
       }}
     */
     createComment: function(){
       var comment = {
         text: this['user-input'],
-        createdAt: this["new-comment-location"]
+        createdAt: this["new-comment-location"],
+        timestamp: this.createTimestamp(this["new-comment-location"])
       };
 
       this.fire('new-comment', comment);
@@ -353,7 +344,7 @@
       this.editing = false;
     },
     /**
-    * Adds or removes an element's higlight
+    * Adds or removes a comment's higlight
     **/
     toggleHighlight: function(){
       //Reverse highlight boolean
@@ -375,7 +366,8 @@
       }
     },
     /**
-    * Creates an editing session when the user clicks the new comment input 
+    *  Sets editing to true when the user clicks the new comment input, preventing the time associated with a
+    *  comment from changing
     **/
     beginEditing: function(){
       if(this.editing){ 
@@ -391,6 +383,20 @@
       } else {
         $('#container').addClass('show-nav');
       }
+    },
+    createTimestamp: function(time){
+      var seconds = Math.floor(((time / 60).toFixed(2).split('.')[1] / 100) * 60);
+      var minutes = (time / 60).toFixed(2).split('.')[0];
+
+      if(minutes < 10){
+        minutes = '0' + minutes;
+      }
+
+      if(seconds < 10){
+        seconds = '0' + seconds;
+      }
+
+      return minutes + ':' + seconds;
     }
   });
 </script>
