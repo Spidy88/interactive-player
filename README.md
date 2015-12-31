@@ -1,4 +1,4 @@
-# <interactive-player>
+##&lt;interactive-player&gt;
 A Vimeo video player with comments and video progress based comment highlighting. Comments show/hide using the off-canvas technique.
 
 The player accepts several attributes, one of which is required: 
