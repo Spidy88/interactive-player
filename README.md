@@ -24,3 +24,9 @@ User written comments are made available through the `new-comment` event which p
 All properties are the same as above. 
 
 Demo viewable in index.html.
+
+# License
+This project is licensed under the terms of the MIT license.
+
+This component was made during my time at Hack Reactor.
+
